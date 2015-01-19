@@ -1,0 +1,55 @@
+---
+layout: default
+---
+<section class="content">
+	<div class="content-cnt fn-clear">
+		<div class="main fn-clear">
+			{% for rpost in paginator.posts %}
+            	<article class="main-excerpt fn-clear">
+                    <h3 class="main-excerpt-title"><a href="{{ rpost.url }}" title="{{ rpost.title }}" rel="bookmark">{{ rpost.title }}</a></h3>
+<!--div class="c9">
+    Categories：
+        {%for cg in post.categories %}
+        <a href="/categories.html#-ref"></a>
+        {%if forloop.index < forloop.length %}
+        ,
+        {%endif%}
+        {%endfor%}
+    |
+    Tags：
+        {%for cg in post.tags %}
+        <a href="/tags.html#-ref"></a>
+        {%if forloop.index < forloop.length %}
+        ,
+        {%endif%}
+        {%endfor%}
+    |
+    Time：<time date="{ { post.date|date: '%Y-%m-%d' }}"></time>
+    <a href='#comments' title='分享文章、查看评论' style="float:right;margin-right:.5em;">Comments</a>
+</div-->
+                    <p class="date"><time pubdate="{{ rpost.date }}">{{ rpost.date | date_to_string }}</time></p>
+                    <p>{{ rpost.description }}</p>
+                   	<p class="more"><a href="{{ rpost.url }}" title="Read More" rel="nofollow"><span>&#10149;</span>Read More</a></p>
+                </article>
+            {% endfor %}
+            {% if paginator.total_pages > 1 %}
+		        <nav id="pagination">
+		            <ul class="pagination">
+		                {% for page in (1..paginator.total_pages) %}
+		                    {% if page == paginator.page %}
+		                        <li class="current"><a href="javascript:void(0);">{{ page }}</a></li>
+		                    {% else %}
+		                        <li><a href="/{%if page > 1 %}page{{ page }}/{% endif %}">{{ page }}</a></li>
+		                    {% endif %}
+		                {% endfor %}
+		            </ul>
+		        </nav>
+		    {% endif %}			
+		</div>
+		<div class="aside fn-clear">
+			{% include wg-me.html %}
+			{% include wg-recent.html %}
+			{% include wg-category.html %}
+		</div>
+	</div>
+</section>

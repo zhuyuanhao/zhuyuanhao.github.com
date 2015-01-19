@@ -1,0 +1,28 @@
+markdown:         rdiscount
+highlighter:	  pygments
+paginate:         7
+
+safe: true
+lsi: false
+
+comments :
+    provider : duoshuo
+    duoshuo :
+          short_name : suhacker
+
+title:            ZhuYuanhao's Blog 
+url:              http://zhuyuanhao.com
+feed:             /atom.xml
+author:
+    name:         ZhuYuanhao
+    email:        nju.zhuyuanhao@gmail.com
+description:      "ZhuYuanhao's Blog -- Do what you just like!"
+
+about: 			  "I'm Zhu Yuanhao."
+follow:
+    github:       https://github.com/zhuyuanhao
+
+
+style: 			  /css/style.css
+blogName: 		  ZhuYuanhao
+blogDesc: 		  Born, Live & Enjoy.
