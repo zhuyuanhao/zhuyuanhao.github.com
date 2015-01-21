@@ -2,7 +2,7 @@
 layout: post
 title: Thinking in Java 第四版 笔记
 category: notes
-description: Thinking in Java，中文名Java编程思想。学习Java必备书籍，难度适中，最大特点在于作者是站在语言设计者的角度,讲解Java的设计原理，正如标题所阐明的——THINKING in Java。笔者做笔记的目的，一则方便查阅，二则在于精简书本的内容，方便浏览。时常看看，以备不时之需。
+description: Thinking in Java，中文名Java编程思想。学习Java必备书籍，难度适中，最大特点在于作者是站在语言设计者的角度,讲解Java的设计原理，正如标题所阐明的——THINKING in Java。做笔记的目的，一则方便查阅，二则在于精简书本的内容，方便浏览。时常看看，以备不时之需。
 ---
 
 * 目录
