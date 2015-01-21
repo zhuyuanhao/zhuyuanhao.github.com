@@ -461,3 +461,182 @@ Java会自动在导出类的构造器中调用基类的默认构造器。若基�
 类中所有的private方法都隐式指定为final的，此时在继承类中定义的相同方法不是覆盖，因为基类中的private不提供对外的接口。
 * final 类  
 类不能被继承。final类中的所有方法都隐式指定为final的。
+
+#第八章 多态
+
+##8.1 作用
+面向对象的基本特征：数据抽象，继承，多态。  
+通过分离分离做什么和怎么做，从另一个角度将接口与实现分离。  
+将改变的事物（覆盖）与未变的事物分离。
+
+##8.2 后期绑定（动态绑定）
+C中没有后期绑定。  
+C++中使用virtual实现。  
+Java中除了static方法（构造器是隐式static方法）和final方法（private方法隐式属于final方法），都是后期绑定。
+注：绑定是对方法来说的，对域的访问都不是多态的。
+
+##8.3 构造器内的多态
+导出类初始化时，会先调用基类的构造器。若基类构造器内使用的某个方法在导出类中被覆盖，则基类构造器会使用导出类中的被覆盖方法。  
+基本原则：构造器尽量避免调用其他方法。唯一能够安全使用的是基类中的final方法（private方法是final方法）。
+
+##8.4 协变返回类型
+导出类中被覆盖的方法可以返回基类方法的返回类型的某种导出类型。
+
+#第九章 接口
+
+##9.1 抽象类和抽象方法
+使用`abstract`关键字声明的方法称为抽象方法（不能有方法体）：`abstract void f();`    
+包含抽象方法的类叫做抽象类。如果一个类包含一个或者多个抽象方法，则该类被限定为抽象的（否则编译器会报错）。我们也可能会创建没有抽象方法的抽象类。  
+抽象类使用`abstract class Name {}`限定，抽象类不能被实例化，一般作为其他类的基类。
+
+##9.2 接口
+接口被用来建立类与类之间的协议。  
+接口可以包含域，但是这些域隐式地是static和final的。不能是“空final”，但可以被非常量表达式初始化。使用Interface.name引用。  
+接口中的方法隐式是public的。  
+如果要创建不带任何方法定义和成员变量的基类，首先考虑接口而不是抽象类。如果要创建基类，首先考虑把它实现为接口。
+
+可以继承任意多个接口，实现接口时，若存在基类，可以采用基类中的函数实现。  
+组合接口可以很容易在接口中添加新的方法名，但是在继承的多个接口中最好不要使用相同的方法名。
+
+##9.3 嵌套接口
+嵌套在另一个接口中的接口自动是public的。实现一个接口时，并不需要实现它内部的接口。  
+嵌套在另一个类中的接口可以是private的。若函数返回一个private的借口，唯一的使用方式就是把这个返回值交给有权使用它的对象。
+
+#第十章 内部类
+
+##10.1 特征
+内部类是一种名字隐藏，在非static时当生成一个内部类对象时，此对象和他的外围对象之间就有了一种联系，它能够访问外围对象（不管多少层）的所有成员(包括private)而不需要任何特殊条件。 
+
+##10.2 创建内部类
+指明内部类类型使用OuterClass.InnerClass的方式。当内部类不是static类（嵌套内部类）时，必须使用某个外围类的对象创建，此时它不能有static数据和static函数，也不能包含static内部类。  
+非static内部类如果需要在内部类中生存对外部对象的引用,可以采用DotThis.this这种方式。  
+如果需要创建某个内部类的对象可以采用外部类.new 内部类构造方法的方式获得。如`DotNew.Inner dni = dn.new Inner();`也就是说内部类的创建必须依赖于外部类的对象。内部类无论包含多少层，`.new`都能产生正确的对象。  
+当一个内部类被定义为private时，在它的外部类之外是无法使用的。 
+
+##10.3 局部内部类
+定义在方法内部或任意作用域内的内部类。在作用域或方法外不能使用该内部类。  
+
+##10.4 匿名内部类
+可以扩展类或者实现接口，但只能实现一个接口或继承一个类，不能同时兼备。
+
+	new BaseClass(基类构造器参数){
+		\\内部类定义
+	};
+匿名内部类不能有构造器，但可以通过实例初始化。 如果想使用外部定义的对象，编译器要去外部对象的引用必须是final的。
+
+##10.5 嵌套类
+声明为static的内部类，又称静态内部类。静态内部类的创建不需要外部类的引用。也不能从静态内部类中访问非静态的外围类对象。  
+接口中的域默认是public static (final)的，嵌套类可以放置在接口中（不需要使用static关键字），甚至可以实现（implements）接口。  
+嵌套内用于实现接口代码的共用。  
+在测试中很有用，嵌套内会生成Outer$Innner.class文件，使用java Outer$Inner执行测试，发布时删除此class文件。
+
+##10.6 内部类的继承
+必须使用一个外部类对象初始化
+
+	public class InheritInner extends WithInner.Inner {
+		//! InheritInner() {} // can not compile
+		InheritInner(WithInner wi) {
+			wi.super();
+		}
+	}
+
+#第十二章 异常
+
+##12.1 基本异常
+出现异常情形，从当前环境下跳出，并将问题交给上一级环境。异常抛出后，自堆上使用new创建异常对象。异常处理机制接管程序，需找异常处理程序来继续执行。  
+通常异常对象中仅有的信息就是异常类型。  
+
+异常类型
+	
+	Object
+		java.lang.Throwable
+			Error
+			Exception
+				IOException
+				...
+				RuntimeExceptionn
+
+##12.2 异常的捕获
+使用try-catch块
+	
+	try{
+		// Code that might generate exceptions
+	} catch(Type1 e1) { // 异常声名不能省略
+		// Handle Type1 exceptions
+	} catch(Type2 e2) { // 先匹配Type1，在匹配Type2，所以Type1一般为Type2的子类
+		// Handle Type2 exceptions
+	}
+
+##12.3 抛出异常
+异常说明用来说明方法可能产生异常  
+`void f() throws TooBig, TooSmall {}`  
+在函数中使用`throw`关键字抛出异常，如果在`try`中抛出异常，则`catch`块将不执行。  
+如果把当前catch的异常重新抛出，则`printStackTrace()`显示的还是原抛出点的信息，使用`throw (Exception)e.fillInStackTrace()`则会显示抛出点的异常信息。
+
+##12.4 异常方法
+所有异常继承自Throwable基类，包含
+	
+	String getMessage()
+	String getLocalizedMessage()
+	String toString()
+	void printStackTrace()
+	void printStackTrace(PrintStream)
+	void printStackTrace(java.io.PrintWriter)
+
+	Throwable fillInStackTrace() // 在Throwable对象内部记录栈帧的当前状态
+	Throwable getCause() // 返回异常cause
+还有从Object类继承的方法
+	
+	o.getClass().getName()	// 获得完整类名
+	o.getClass().getSimpleName()	// 获得类名
+
+##12.5 异常链
+`Error,Exception,RuntimeException`提供了带case参数（原始异常）的构造器，对其他的异常类型，使用`initCause()`方法声明异常原因。  
+其中，`Throwable initCause(Throwable case)`返回原对象，但类型变为`Throwable`，所以返回值需要强制转换后才能重新抛出，或者返回原对象。
+
+	dfe.initCause(e);
+	throw dfe;
+	// or you can use 
+	//throw (Exception)dfe.initCause(e);
+
+##12.6 Java标准异常
+`Error`异常是编译时或系统错误。一般只用关心`Exception`异常。  
+所有异常都应该被捕获，但`RuntimeException`除外，因此也被称为“不受检查的异常”，但如果没有捕获`RuntimeException`异常，则会直达`main()`，并在退出程序前调用异常的`printStackTrace()`方法。  
+`RuntimeException`包括：  
+`NullPointerException, ArithmeticException, ClassCastException, IndexOutOfBoundsException, IllegalArgumentException-NumberFormatException(字符串传给做使用数字参数的函数时)`
+
+##12.7 finally
+可以用在`try-finally`结构或者`try-catch-finally`结构中。  
+无论`try`块是否抛出异常，`finally` 子句都会执行，主要用来清理。（C++中没有`finally`，使用析构函数完成清理）包含：
+
+* 捕获到异常
+* 有未捕获的异常，在跳到上一层环境之前执行
+* 正常执行
+* 在`try`块中有`break`或`continue`中断循环
+* 在`try`块中包含`return`语句
+
+若`finally`中抛出新异常，则原异常失效，外层只处理`finally`中的新异常。  
+若`finally`中有返回语句`return`，则所有异常都被忽略，程序正常返回。 
+
+##12.8 异常的限制
+* 继承类可以不抛出异常，在继承关系中，异常说明的范围只能变小。
+* 若继承基类和接口中抛出的异常类型不同，则以基类为准，不能抛出接口中的异常
+* 构造函数的异常说明可以包含新异常，但必须包含基类的异常。因为它会调用基类的构造函数
+* 当覆盖方法时，只能抛出在基类方法的异常说明中的异常或那些异常的派生类。
+
+##12.9 构造器中的异常
+派生类构造器不能捕获基类构造器抛出的异常，因为此时基类还没构造出来。所以`super()`函数不能包含在`try`块中。  
+在构造器中，创建了需要清理的对象后，应该立即进入另一个`try-finally`块中，在`finally`子句中清理对象。
+
+	try {
+		Object o = new Object();
+		try {
+			...
+		} catch(Exception e) {
+			...
+		} finally {
+			o.dispose();
+		}
+	} catch(Exception e) {
+		...
+	}
