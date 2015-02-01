@@ -51,12 +51,80 @@ Linux的loader可以手动设置菜单，但Windows装机的时候会覆盖MBR�
 ###1.1.3 目录结构
 Linux的文件系统是目录数结构，根目录为"/"目录。对每个磁盘分区，需要使用一个目录当成进入点，使该磁盘内的数据都放置在该目录下。将磁盘分区与目录相关联的过程叫挂载，这个目录叫挂载点。
 
-若根目录“/”在partition1，“/home”目录挂载在partition2，则“/home”目录下所有文件都在partition2。
+若根目录"/"在partition1，"/home"目录挂载在partition2，则"/home"目录下所有文件都在partition2。
 
+重要目录：
+/boot : 放在整个硬盘最前面，100MB左右（小于1024个柱面）。有些老主板的BIOS无法识别大硬盘，导致开机无法启动。
+/ : 根目录
 /usr：系统可执行文件  
 /var：系统数据  
 /home：用户数据  
 swap：交换分区  
+
+###1.1.4 文件系统类型
+在给Linux系统分区时，可以选择如下文件系统类型
+
+* ext2/ext3: Linux适用的文件系统类型。
+* physical volume (LVM): 可用来弹性调整文件系统大小的类型。
+* software RAID: 用软件仿真磁盘阵列。
+* swap: 内存交换空间类型。如果用此类型就不需要指定挂载点。
+* vfat: 同时被Linux和Windows支持的类型。
+
+##1.2 安装启动相关
+Windows的环境中最好将Linux的根目录与swap取消挂载，否则Windows的资源管理器会提示你格式化这两个分区。
+
+Linux不要随便删除，因为grub会读取Linux根目录下的/boot/目录内容。如果删除了，Windows也无法启动。
+
+即使有多块硬盘，也只有一个MBR，BIOS会读取第一个可开机设备的MBR。
+
+Linux默认提供6个终端界面tty1~tty6，还有一个图形界面。
+CTRL+ALT+F1~F6: 文字界面登录tty1~tty6终端。 
+CTRL+ALT+F7: 图形界面桌面。
+
+##1.3 执行Linux命令
+Linux命令的基本格式为：
+
+    command [-options] para1 para2
+    command: 命令或者可执行文件
+    [Tab]键：在输入命令时作“命令补全”，在输入para时，作“文件补齐”
+    [Ctrl]+c: 中断当前命令执行
+    [Ctrl]+d: 作EOF，代表键盘输入结束
+    
+    
+命令太长时，使用反斜杠"\"+[Enter]换行。
+
+##1.4 命令查询
+man是manual的简称，可以查询Linux的系统相关信息，类似的还有info命令。man可查寻的内容包括：
+
+* 1: 命令或可执行文件
+* 2: 系统内核可调用的函数于工具
+* 3: 一些常用的函数与函数库，大部分为C的函数库(libc)
+* 4: 设备文件的说明，通常在/dev下的文件
+* 5: 设备文件或者是某些文件的格式
+* 6: 游戏
+* 7: 惯例于协议等，如Linux文件系统、网络协议、ASCII说明
+* 8: 系统管理员可用的管理命令
+* 9: 根kernel有关的文件
+
+这些项会在查询结果的后面用相应数字加以区分。同时可用`man [number] item`的方式查询某个类型的项。
+
+    man -f item     # 查找所有类型中与item有关的文件
+    man -k item     # 在系统说明文件中搜索字符串item
+
+在man page常用的按键
+space       向下翻一页
+Page Down   向下翻一页
+Page Up     向上翻一页
+Home        去第一页
+End         去最后一页
+/string     向下查询string
+?string     向上查询string
+n,N         n表示继续向下查询，N表示继续向上查询，不管是用的/或?
+q           退出此man page
+ 
+
+
+
 
 
 
