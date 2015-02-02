@@ -93,6 +93,11 @@ Linux命令的基本格式为：
     
 命令太长时，使用反斜杠"\"+[Enter]换行。
 
+	$ uname -r
+	# 查看Linux内核版本
+	$ lsb_release -a
+	# 查看distribution详细信息
+
 ##1.4 命令查询
 man是manual的简称，可以查询Linux的系统相关信息，类似的还有info命令。man可查寻的内容包括：
 
@@ -112,14 +117,15 @@ man是manual的简称，可以查询Linux的系统相关信息，类似的还有
     man -k item     # 在系统说明文件中搜索字符串item
 
 在man page常用的按键
-space       向下翻一页
-Page Down   向下翻一页
-Page Up     向上翻一页
-Home        去第一页
-End         去最后一页
-/string     向下查询string
-?string     向上查询string
-n,N         n表示继续向下查询，N表示继续向上查询，不管是用的/或?
+
+space       向下翻一页  
+Page Down   向下翻一页  
+Page Up     向上翻一页  
+Home        去第一页  
+End         去最后一页  
+/string     向下查询string  
+?string     向上查询string  
+n,N         n表示继续向下查询，N表示继续向上查询，不管是用的/或?  
 q           退出此man page
  
 #2. 第6、7章 Linux文件与目录
@@ -137,23 +143,95 @@ Linux包含用户和用户组的概念，一个用户可以属于多个用户组
 	$ ls -l
 	total 132										
 	-rwxrw-r--	4	root	root	32142	Sep 8 18:26	install.log
-	[文件权限][连接数][所有者][所属用户组][大小][最后修改时间][文件名]
+	[文件权限][连接数][所有者][所属用户组][大小(B)][最后修改时间][文件名]
 	...
 
 文件权限的第一个字母表示文件类型：
 
 * [d] 目录
-* [-] 文件
+* [-] 文件：按内容分为纯文本文件，二进制文件和数据格式文件。cat命令只能输出纯文本文件的内容。
 * [l] 链接文件
-* [b] 块设备，比如硬盘
-* [c] 串行端口设备，比如键盘、鼠标
+* [b] 块设备，随机读取，比如硬盘/dev/sda
+* [c] 串行端口设备，一次性读取，比如键盘、鼠标。
+* [s] 套接字sockets，/var/run/下。
+* [p] FIFO管道。
 
 其余9个字母分成三组，分别表示[所有者、所属用户组、所有人]拥有的权限。  
-r-读，w-写，x-执行。对于目录和文件，两者的意义略有不同。  
-root用户不受用户权限限制。
+r-读，w-写，x-执行。对于目录和文件，两者的意义略有不同。
 
+对文件：r-可读；w-可修改内容但不能删除；x-可执行  
+对目录：r-可查看目录下文件（目录）列表但不能查看文件（目录）权限等信息；w-可修改目录，包括新建、删除或重命名文件和目录；x-可进入该目录成为工作目录并执行命令。
 
+注意：   
+root用户不受用户权限限制。  
+在本目录执行文件，且本目录不在$PATH中时，由于命令执行需要变量支持，所以需要严格指定该文件，如`./run.sh`
 
+cp命令复制文件时，会复制命令执行者的权限。  
+修改权限的命令chgrp,chown,chmod。
+
+	chgrp [-R] group file/dir  
+	# group必须在/etc/group中存在
+	
+	chown [-R] user file/dir  
+	# user必须在/etc/passwd中存在，可使用user.group或user:group同时改变所有者和用户组，还可以单使用.group改变所属用户组。
+
+	chmod [-R] 777 file/dir
+	# r:4 w:2 x:1
+	chmod [-R] u+r,g-w,o=rx,a-x file/dir
+	# u:user g:group o:other a:all
+	# +:增加 -:除去 =:设置
+
+[连接数]表示有多少文件名连接到此节点（i-node）。
+
+[文件名]单一文件或目录名长度限制在255个字符，包含目录的完整文件名限制在4096个字符。  
+以点号(.)开头的文件时隐藏文件。命名文件时，避免一些特殊字符`* ? < > ; & ! [ ] | \ ' " ( ) { } + - `
+
+##2.2 Linux目录结构
+
+Linux有FHS标准(Filesystem Hierarchy Standard)。规定了一些基本的文件结构，包括是否可分享（被其他主机挂载），是否可变（经常变动）。
+
+根目录下包含与开机、还原、系统修复等操作有关的文件，所以建议根目录分区越小越好。  
+由于开机时，只有根目录会被挂载，其他分区是开机完成后挂载，所以与开机有关的目录必须和根目录在同一个分区，包括：  
+
+* /etc: 配置文件，重要的包括/etc/inittab,/etc/init.d/,/etc/modprobe.conf,/etc/X11/,/etc/fstab,/etc/sysconfig/；
+* /bin: 开机执行文件，但用户维护模式下还能被使用的命令；
+* /dev: 所需要的设备文件，/dev/null,/dev/zero,/dev/tty,/dev/lp\*,/dev/sd\*,/dev/hd\*；
+* /lib: /bin和/sbin中执行文件所需要的函数库与内核所需的模块(lib/modules/)；
+* /sbin: 系统开机执行文件。
+
+其他目录：
+
+* /boot: 开机时用到的文件，/boot/grub/等。
+* /home: 所有用户的主文件夹。
+* /media: 可删除设备,/media/floppy, /media/cdrom等。
+* /mnt: 挂载的额外设备。
+* /opt: 第三方软件目录。
+* /root: root用户的主文件夹，最好和根目录在同一分区中。
+* /srv: 网络服务启动后取数据的目录。
+* /tmp: 临时文件存放目录，任何人都可以访问。
+* /lost+found: 文件系统发生错误时，存放一些丢失片段的目录。通常位于分区的顶层。
+* /proc: 内存映射的虚拟文件目录
+* /sys: 内存映射的与内核有关文件的虚拟文件目录
+
+比较复杂的目录：
+
+* /usr: UNIX software resource。FHS定义可分享不可变动的目录。所有系统默认的软件建议放在此目录，此目录一般很大。包含
+	* /usr/X11R6: X Windows目录
+	* /usr/bin/: 用户可执行命令文件
+	* /usr/include/: C/C++头文件
+	* /usr/lib(64)/: 各种应用软件的函数库、目标文件，一些不常用的特殊命令。
+	* /usr/local/: 非系统默认的软件。该目录下也具有./bin, ./etc, ./include, ./lib子目录。
+	* /usr/sbin/: 非开机运行的系统命令。比如网络服务器服务命令。
+	* /usr/share/: 共享文件。./man在线帮助文件，./doc软件说明文件，./zoneinfo与时区有关的文件。
+	* /usr/src/: 源码。内核源码在/usr/src/linux/。
+* /var: 系统运行时变动的文件，运行时容量逐步增长。
+	* /var/cache/: 应用程序暂存文件
+	* /var/lib/: 程序运行时的数据文件存放位置
+	* /var/lock/: 设备或文件的锁
+	* /var/log/: 登录文件。/var/log/messages, /var/log/wtmp（登录者信息）
+	* /var/mail/: 个人电子邮箱目录，常与/var/spool/mail/互为链接。
+	* /var/run/: PID放置目录
+	* /var/spool/: 等待其他程序使用的队列数据。如/var/spool/mail/, /var/spool/mqueue/, /var/spool/cron/等。
 
 
 
