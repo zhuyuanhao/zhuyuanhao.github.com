@@ -1,7 +1,18 @@
-#markdown:         rdiscount
-markdown:         kramdown
+# Site settings
+title: ZhuYuanhao's Blog
+email: yhzhu061@163.com
+description: > # this means to ignore newlines until "baseurl:"
+  温故而知新 <br/>
+  积跬步而成千里 <br/>
+  不忘初心，方得始终
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://zhuyuanhao.com" # the base hostname & protocol for your site
+github_username:  zhuyuanhao
+
+# Build settings
+markdown: kramdown
 kramdown: 
-  toc_levels: "1"
+  toc_levels: "1,2"
 highlighter:	  pygments
 paginate:         7
 
@@ -12,20 +23,3 @@ comments :
     provider : duoshuo
     duoshuo :
           short_name : suhacker
-
-title:            ZhuYuanhao's Blog 
-url:              http://zhuyuanhao.com
-feed:             /atom.xml
-author:
-    name:         ZhuYuanhao
-    email:        nju.zhuyuanhao@gmail.com
-description:      "ZhuYuanhao's Blog -- Do what you just like!"
-
-about: 			  "I'm Zhu Yuanhao."
-follow:
-    github:       https://github.com/zhuyuanhao
-
-
-style: 			  /css/style.css
-blogName: 		  ZhuYuanhao
-blogDesc: 		  Born, Live & Enjoy.
