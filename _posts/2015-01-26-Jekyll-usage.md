@@ -18,9 +18,9 @@ Jekyll依赖于ruby和javascript，作者的安装过程如下：
 
 
     # 安装Ruby及RubyGems
-    $ sudo apt-cache search ruby 
     $ sudo apt-get install ruby1.9.1-full
-    # 其他版本的ruby都会有错误，此版本ruby已经包含了rubygems
+    # 其他版本的ruby都会有错误，此版本ruby已经包含了rubygems, 
+	# 可使用sudo apt-cache search ruby查看所有版本
     
     # 安装JavaScript环境，比如nodejs
     $ sudo apt-get install nodejs
